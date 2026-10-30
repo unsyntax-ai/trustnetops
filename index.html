@@ -14,44 +14,51 @@
   :root {
     --navy: #003087; --navy-deep: #00225f; --white: #ffffff; --green: #008430; --red: #ff0000;
     --settle: cubic-bezier(.16, 1, .3, 1);
-    --px: 0; --py: 0;
+    --cycle: 10s; /* one reveal, hold and exit, then it starts again */
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0; min-height: 100vh; min-height: 100dvh; overflow: hidden; position: relative;
+    margin: 0; min-height: 100vh; min-height: 100dvh; overflow: hidden;
     display: grid; place-items: center; text-align: center;
     padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem max(1.5rem, env(safe-area-inset-bottom));
     background: var(--navy); color: var(--white); -webkit-font-smoothing: antialiased;
   }
+  main { display: flex; flex-direction: column; align-items: center; max-width: 60rem; }
 
-  main {
-    position: relative; display: flex; flex-direction: column; align-items: center; max-width: 60rem;
-    transform: translate3d(calc(var(--px) * .5rem), calc(var(--py) * .5rem), 0);
-  }
-
-  /* materialize: blur, scale and opacity arrive together, staggered */
-  .in { opacity: 0; transform: translateY(1.1rem) scale(.97); filter: blur(10px); animation: rise 1.5s var(--settle) calc(var(--d) * 1ms) forwards; }
-  @keyframes rise { to { opacity: 1; transform: none; filter: none; } }
-  @keyframes fade { to { opacity: 1; } }
-
+  /* title: each letter rises out of a mask, holds, then leaves upward */
   h1 {
-    margin: 0; font: 700 clamp(3rem, 13vw, 8.5rem)/1.02 Poppins, system-ui, sans-serif; letter-spacing: -.035em;
+    margin: 0; padding-bottom: .14em; margin-bottom: -.14em; overflow: hidden;
+    font: 700 clamp(3rem, 13vw, 8.5rem)/1.02 Poppins, system-ui, sans-serif; letter-spacing: -.035em;
   }
+  h1 span { display: inline-block; animation: letter var(--cycle) infinite backwards; animation-delay: calc(var(--i) * 50ms); }
+  h1 .sp { width: .28em; }
+  .ops { color: var(--red); }
+  @keyframes letter {
+    0%   { transform: translateY(115%); animation-timing-function: var(--settle); }
+    14%  { transform: none; animation-timing-function: step-end; }
+    76%  { transform: none; animation-timing-function: cubic-bezier(.7, 0, .84, 0); }
+    90%, 100% { transform: translateY(-115%); }
+  }
+
+  /* tagline and glass follow the title on the same cycle */
+  .tag, .stage { animation: follow var(--cycle) infinite backwards; animation-delay: calc(var(--d) * 1ms); }
   .tag {
     margin: clamp(.9rem, 2.5vh, 1.5rem) 0 0;
-    font: 600 clamp(1.25rem, 3.6vw, 2rem)/1.3 "Times New Roman", Times, serif; letter-spacing: .005em;
-    color: rgba(255,255,255,.85);
+    font: 600 clamp(1.25rem, 3.6vw, 2rem)/1.3 "Times New Roman", Times, serif; color: rgba(255,255,255,.85);
+  }
+  @keyframes follow {
+    0%   { opacity: 0; transform: translateY(.9rem); filter: blur(8px); animation-timing-function: var(--settle); }
+    14%  { opacity: 1; transform: none; filter: none; animation-timing-function: step-end; }
+    76%  { opacity: 1; transform: none; filter: none; animation-timing-function: ease-in; }
+    90%, 100% { opacity: 0; transform: translateY(-.9rem); filter: blur(8px); }
   }
 
-  /* liquid glass: flat shapes drift underneath, the pane bends and frosts what passes behind it */
+  /* liquid glass: a flat red lens drifts underneath; the pane frosts and bends it */
   .stage { position: relative; margin-top: clamp(2.5rem, 9vh, 5rem); }
-  .shape { position: absolute; left: 50%; top: 50%; border-radius: 50%; }
-  .shape.g { width: 3.6rem; height: 3.6rem; margin: -1.8rem 0 0 -1.8rem; background: var(--green); animation: lx 11s ease-in-out infinite alternate, ly 7s ease-in-out infinite alternate; }
-  .shape.w { width: 1.8rem; height: 1.8rem; margin: -.9rem 0 0 -.9rem; background: var(--white); animation: lx 9s ease-in-out -4s infinite alternate-reverse, ly 13s ease-in-out -3s infinite alternate; }
-  .shape.r { width: 1rem; height: 1rem; margin: -.5rem 0 0 -.5rem; background: var(--red); animation: lx 15s ease-in-out -6s infinite alternate, ly 9s ease-in-out -2s infinite alternate-reverse; }
+  .lens { position: absolute; left: 50%; top: 50%; width: 2.2rem; height: 2.2rem; margin: -1.1rem 0 0 -1.1rem; border-radius: 50%; background: var(--red); animation: lx 7s ease-in-out infinite alternate, ly 5s ease-in-out infinite alternate; }
   @keyframes lx { from { translate: -8.5rem 0; } to { translate: 8.5rem 0; } }
-  @keyframes ly { from { transform: translateY(-1.6rem); } to { transform: translateY(1.6rem); } }
+  @keyframes ly { from { transform: translateY(-1.4rem); } to { transform: translateY(1.4rem); } }
 
   .glass {
     position: relative; display: inline-flex; align-items: center; justify-content: center;
@@ -62,7 +69,7 @@
     -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
     border: 1px solid rgba(255,255,255,.28);
     box-shadow:
-      inset 1.5px 1.5px 0 rgba(255,255,255,.6),      /* light catching the top-left rim */
+      inset 1.5px 1.5px 0 rgba(255,255,255,.6),
       inset -1.5px -1.5px 0 rgba(255,255,255,.18),
       inset 0 0 22px rgba(255,255,255,.14),
       0 14px 34px -8px rgba(0,10,40,.45);
@@ -75,9 +82,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .in { animation: fade .6s ease forwards !important; transform: none; filter: none; }
-    .shape { animation: none !important; }
-    main { transform: none; }
+    h1 span, .tag, .stage, .lens { animation: none; }
   }
   @media (prefers-reduced-transparency: reduce) {
     .glass { background: var(--navy-deep); -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
@@ -91,39 +96,29 @@
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <filter id="liquid" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-      <feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="2" seed="3" result="n">
-        <animate attributeName="baseFrequency" dur="14s" values=".012 .02;.02 .012;.012 .02" repeatCount="indefinite"/>
-      </feTurbulence>
+      <feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="2" seed="3" result="n"/>
       <feDisplacementMap in="SourceGraphic" in2="n" scale="40" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </svg>
 
   <main>
-    <h1 class="in" style="--d:200">Trustnet Ops</h1>
-    <p class="tag in" style="--d:450">Your work, our word</p>
-    <div class="stage in" style="--d:700">
-      <i class="shape g"></i><i class="shape w"></i><i class="shape r"></i>
+    <h1 aria-label="Trustnet Ops"></h1>
+    <p class="tag" style="--d:500">Your work, our word</p>
+    <div class="stage" style="--d:800">
+      <i class="lens"></i>
       <div class="glass">Coming soon</div>
     </div>
   </main>
 
-  <footer class="in" style="--d:1000">&copy; 2026 Trustnet Ops</footer>
+  <footer>&copy; 2026 Trustnet Ops</footer>
 
 <script>
   // Chromium can run an SVG filter inside backdrop-filter; others keep the frosted blur
   if (navigator.userAgentData) document.documentElement.classList.add("refract");
-  // the page follows the pointer through a critically damped chase, so it never snaps
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const root = document.documentElement;
-    let tx = 0, ty = 0, x = 0, y = 0;
-    addEventListener("pointermove", e => { tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1; });
-    document.addEventListener("pointerleave", () => { tx = ty = 0; });
-    (function tick() {
-      x += (tx - x) * .06; y += (ty - y) * .06;
-      root.style.setProperty("--px", x.toFixed(4)); root.style.setProperty("--py", y.toFixed(4));
-      requestAnimationFrame(tick);
-    })();
-  }
+  // split the title into letters for the staggered mask reveal; "Ops" is the red word
+  document.querySelector("h1").innerHTML = [..."Trustnet Ops"].map((c, i) =>
+    c === " " ? '<span class="sp" aria-hidden="true"></span>'
+              : `<span aria-hidden="true" class="${i > 8 ? "ops" : ""}" style="--i:${i}">${c}</span>`).join("");
 </script>
 </body>
 </html>
