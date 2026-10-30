@@ -5,30 +5,127 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trustnet Ops</title>
 <meta name="description" content="Your work, our word. Coming soon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <style>
-  :root { --primary: #ffffff; --secondary: #008430; --accent: #d62828; }
+  /* ratio: navy 60 / white 27 / green 10 / red 3 */
+  :root { --navy: #003087; --white: #ffffff; --green: #008430; --red: #ff0000; }
+  @property --a { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
   * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
   body {
-    margin: 0; min-height: 100vh; display: grid; place-items: center;
-    padding: 16px; text-align: center;
-    background: var(--primary); color: var(--secondary);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    border-top: 8px solid var(--secondary);
+    min-height: 100vh; display: grid; place-items: center; padding: 16px;
+    background: radial-gradient(ellipse at 50% 40%, #0a46b0 0%, var(--navy) 55%, #001a4d 100%);
+    overflow: hidden; position: relative; text-align: center;
   }
-  h1 { margin: 0; font-size: clamp(2.5rem, 9vw, 5rem); letter-spacing: -.02em; }
-  .tag { margin: .5rem 0 2rem; font-size: clamp(1.1rem, 3vw, 1.5rem); font-style: italic; }
-  .soon {
-    display: inline-block; padding: .6rem 1.6rem; border-radius: 999px;
-    background: var(--accent); color: var(--primary);
-    font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+  /* orbit rings behind the card */
+  .rings { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .rings i {
+    position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
+    animation: spin linear infinite;
   }
+  .rings i::after {
+    content: ""; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px;
+    margin-left: -5px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 16px 4px rgba(0,132,48,.8);
+  }
+  .rings i:nth-child(1) { width: min(70vmin, 560px); aspect-ratio: 1; animation-duration: 18s; }
+  .rings i:nth-child(2) { width: min(95vmin, 780px); aspect-ratio: 1; animation-duration: 30s; animation-direction: reverse; }
+  .rings i:nth-child(2)::after { background: var(--white); box-shadow: 0 0 16px 4px rgba(255,255,255,.7); }
+  .rings i:nth-child(3) { width: min(125vmin, 1020px); aspect-ratio: 1; animation-duration: 46s; border-style: dashed; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* card with rotating light border */
+  .card {
+    position: relative; z-index: 1; width: min(92vw, 520px); padding: clamp(32px, 7vw, 56px) clamp(20px, 5vw, 48px);
+    border-radius: 28px; color: var(--navy);
+    box-shadow: 0 30px 80px rgba(0,10,40,.55);
+    animation: float 6s ease-in-out infinite;
+  }
+  .card::before { /* rotating light border */
+    content: ""; position: absolute; inset: -3px; z-index: -2; border-radius: 31px;
+    background: conic-gradient(from var(--a), var(--green), var(--white), var(--navy), var(--white), var(--green));
+    box-shadow: 0 0 50px rgba(0,132,48,.45); animation: rot 5s linear infinite;
+  }
+  .card::after { /* white face above the border */
+    content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 28px; background: var(--white);
+  }
+  @keyframes rot { to { --a: 360deg; } }
+  @keyframes float { 50% { transform: translateY(-12px); } }
+
+  .live { display: inline-flex; align-items: center; gap: 8px; font: 600 .8rem "Times New Roman", Times, serif; letter-spacing: .2em; text-transform: uppercase; color: var(--green); }
+  .live b { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: ping 1.6s ease-out infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(255,0,0,.7); } 100% { box-shadow: 0 0 0 12px rgba(255,0,0,0); } }
+
+  h1 {
+    margin: 18px 0 6px; font: 700 clamp(2.4rem, 9vw, 3.8rem)/1.05 Poppins, sans-serif; letter-spacing: -.02em;
+    background: linear-gradient(100deg, var(--navy) 30%, #2a6bd6 50%, var(--navy) 70%) 0 0 / 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 4s ease-in-out infinite;
+  }
+  @keyframes shine { 0% { background-position: 100% 0; } 60%, 100% { background-position: -50% 0; } }
+
+  .tag { margin: 0 0 30px; font: 600 clamp(1.1rem, 3.4vw, 1.4rem) "Times New Roman", Times, serif; color: var(--green); }
+
+  .soon { display: flex; justify-content: center; gap: .08em; font: 700 clamp(1.3rem, 5vw, 1.8rem) Poppins, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--navy); }
+  .soon span { display: inline-block; animation: wave 2.4s ease-in-out infinite; animation-delay: calc(var(--i) * 90ms); }
+  .soon .sp { width: .5em; }
+  @keyframes wave { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-9px); color: var(--green); } }
+
+  .bar { margin: 22px auto 0; width: 70%; height: 4px; border-radius: 4px; background: rgba(0,48,135,.12); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 35%; border-radius: 4px; background: linear-gradient(90deg, var(--green), var(--red) 95%); animation: slide 2.2s cubic-bezier(.6,0,.4,1) infinite; }
+  @keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
 </style>
 </head>
 <body>
-  <main>
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <main class="card">
+    <div class="live"><b></b>Launching soon</div>
     <h1>Trustnet Ops</h1>
     <p class="tag">Your work, our word</p>
-    <span class="soon">Coming soon</span>
+    <div class="soon" aria-label="Coming soon"></div>
+    <div class="bar" aria-hidden="true"><i></i></div>
   </main>
+
+<script>
+  // split "Coming soon" into letters for the wave animation
+  document.querySelector(".soon").innerHTML = [..."Coming soon"]
+    .map((c, i) => c === " " ? '<span class="sp"></span>' : `<span aria-hidden="true" style="--i:${i}">${c}</span>`).join("");
+
+  // drifting network of nodes
+  const cv = document.getElementById("net"), cx = cv.getContext("2d");
+  let W, H, nodes = [];
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function size() {
+    W = cv.width = innerWidth; H = cv.height = innerHeight;
+    nodes = Array.from({ length: Math.round(W * H / 16000) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .5, vy: (Math.random() - .5) * .5,
+      g: Math.random() < .15
+    }));
+  }
+  function frame() {
+    cx.clearRect(0, 0, W, H);
+    for (const a of nodes) {
+      a.x = (a.x + a.vx + W) % W; a.y = (a.y + a.vy + H) % H;
+      for (const b of nodes) {
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 140) { cx.strokeStyle = `rgba(255,255,255,${.22 * (1 - d / 140)})`; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); }
+      }
+      cx.fillStyle = a.g ? "#00c24e" : "rgba(255,255,255,.7)";
+      cx.beginPath(); cx.arc(a.x, a.y, a.g ? 3 : 2, 0, 7); cx.fill();
+    }
+    if (!still) requestAnimationFrame(frame);
+  }
+  addEventListener("resize", size);
+  size(); frame();
+</script>
 </body>
 </html>
