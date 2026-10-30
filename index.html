@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <style>
-  /* ratio: navy 60 / white 27 / green 10 / red 3 */
+  /* flat colour only: navy 60 / white 27 / green 10 / red 3 */
   :root {
-    --navy: #003087; --navy-deep: #00164a; --white: #ffffff; --green: #008430; --red: #ff0000;
-    --settle: cubic-bezier(.16, 1, .3, 1); /* critically damped: no overshoot on things nobody threw */
+    --navy: #003087; --navy-deep: #00225f; --white: #ffffff; --green: #008430; --red: #ff0000;
+    --settle: cubic-bezier(.16, 1, .3, 1);
     --px: 0; --py: 0;
   }
   * { box-sizing: border-box; }
@@ -22,32 +22,7 @@
     margin: 0; min-height: 100vh; min-height: 100dvh; overflow: hidden; position: relative;
     display: grid; place-items: center; text-align: center;
     padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem max(1.5rem, env(safe-area-inset-bottom));
-    background: radial-gradient(120% 90% at 50% 0%, #0a3fa5 0%, var(--navy) 45%, var(--navy-deep) 100%);
-    color: var(--white); -webkit-font-smoothing: antialiased; font-optical-sizing: auto;
-  }
-
-  /* aurora: slow light behind everything; the whole layer leans away from the pointer */
-  .aurora {
-    position: fixed; inset: -6vmax; overflow: hidden; pointer-events: none;
-    transform: translate3d(calc(var(--px) * -2vmax), calc(var(--py) * -2vmax), 0);
-  }
-  .aurora i {
-    position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55; will-change: transform;
-    animation: drift 30s ease-in-out infinite alternate;
-  }
-  .aurora i:nth-child(1) { width: 60vmax; height: 60vmax; left: -15vmax; top: -20vmax; background: #2f6fe0; }
-  .aurora i:nth-child(2) { width: 46vmax; height: 46vmax; right: -12vmax; bottom: -18vmax; background: var(--green); opacity: .5; animation-duration: 38s; animation-delay: -8s; }
-  .aurora i:nth-child(3) { width: 38vmax; height: 38vmax; left: 30%; bottom: -26vmax; background: #1a4fc0; animation-duration: 44s; animation-delay: -15s; }
-  .aurora i:nth-child(4) { width: 14vmax; height: 14vmax; right: 18%; top: 8%; background: var(--red); opacity: .14; animation-duration: 36s; animation-delay: -4s; }
-  @keyframes drift {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to   { transform: translate3d(8vmax, 6vmax, 0) scale(1.18); }
-  }
-
-  /* film grain keeps the gradients from banding */
-  .grain {
-    position: fixed; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background: var(--navy); color: var(--white); -webkit-font-smoothing: antialiased;
   }
 
   main {
@@ -60,103 +35,89 @@
   @keyframes rise { to { opacity: 1; transform: none; filter: none; } }
   @keyframes fade { to { opacity: 1; } }
 
-  /* light material: bright top edge = light catching the glass */
-  .status {
-    display: inline-flex; align-items: center; gap: .65rem; padding: .6rem 1.15rem .6rem .9rem; border-radius: 999px;
-    font: 600 .8rem "Times New Roman", Times, serif; letter-spacing: .18em; text-transform: uppercase;
-    background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16);
-    -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 24px -8px rgba(0,10,40,.5);
-  }
-  .status b { width: .45rem; height: .45rem; border-radius: 50%; background: var(--red); animation: ping 3s ease-out infinite; }
-  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(255,0,0,.6); } 60%, 100% { box-shadow: 0 0 0 .65rem rgba(255,0,0,0); } }
-
-  /* tracking tightens as type grows; leading tightens with it */
   h1 {
-    margin: clamp(1.75rem, 6vh, 3.5rem) 0 0;
-    font: 700 clamp(3rem, 13vw, 8.5rem)/1.02 Poppins, system-ui, sans-serif; letter-spacing: -.035em;
-    background: linear-gradient(110deg, #fff 0%, #fff 42%, #a9c4ff 50%, #fff 58%, #fff 100%) 100% 0 / 300% 100%;
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--white);
+    margin: 0; font: 700 clamp(3rem, 13vw, 8.5rem)/1.02 Poppins, system-ui, sans-serif; letter-spacing: -.035em;
   }
-  h1.in { animation: rise 1.5s var(--settle) calc(var(--d) * 1ms) forwards, sheen 9s ease-in-out 2.5s infinite; }
-  @keyframes sheen { 0% { background-position: 100% 0; } 40%, 100% { background-position: 0 0; } }
-
   .tag {
     margin: clamp(.9rem, 2.5vh, 1.5rem) 0 0;
     font: 600 clamp(1.25rem, 3.6vw, 2rem)/1.3 "Times New Roman", Times, serif; letter-spacing: .005em;
-    color: rgba(255,255,255,.82);
+    color: rgba(255,255,255,.85);
   }
 
-  .pill {
-    --sx: 50%; --sy: 50%;
-    position: relative; margin-top: clamp(2.25rem, 8vh, 4.5rem); display: inline-flex; align-items: center; justify-content: center;
-    padding: 1.1rem 2.75rem; border-radius: 999px; overflow: hidden; isolation: isolate;
+  /* liquid glass: flat shapes drift underneath, the pane bends and frosts what passes behind it */
+  .stage { position: relative; margin-top: clamp(2.5rem, 9vh, 5rem); }
+  .shape { position: absolute; left: 50%; top: 50%; border-radius: 50%; }
+  .shape.g { width: 3.6rem; height: 3.6rem; margin: -1.8rem 0 0 -1.8rem; background: var(--green); animation: lx 11s ease-in-out infinite alternate, ly 7s ease-in-out infinite alternate; }
+  .shape.w { width: 1.8rem; height: 1.8rem; margin: -.9rem 0 0 -.9rem; background: var(--white); animation: lx 9s ease-in-out -4s infinite alternate-reverse, ly 13s ease-in-out -3s infinite alternate; }
+  .shape.r { width: 1rem; height: 1rem; margin: -.5rem 0 0 -.5rem; background: var(--red); animation: lx 15s ease-in-out -6s infinite alternate, ly 9s ease-in-out -2s infinite alternate-reverse; }
+  @keyframes lx { from { translate: -8.5rem 0; } to { translate: 8.5rem 0; } }
+  @keyframes ly { from { transform: translateY(-1.6rem); } to { transform: translateY(1.6rem); } }
+
+  .glass {
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    padding: 1.15rem 3rem; border-radius: 999px;
     font: 700 .95rem Poppins, system-ui, sans-serif; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--navy);
-    background: radial-gradient(circle 9rem at var(--sx) var(--sy), #e4ecfb, var(--white) 70%);
-    box-shadow: 0 0 0 1px rgba(255,255,255,.4), 0 18px 50px -12px rgba(255,255,255,.35), 0 0 80px -10px rgba(0,132,48,.55);
+    color: var(--white); text-shadow: 0 1px 8px rgba(0,20,70,.45);
+    background: rgba(255,255,255,.14);
+    -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow:
+      inset 1.5px 1.5px 0 rgba(255,255,255,.6),      /* light catching the top-left rim */
+      inset -1.5px -1.5px 0 rgba(255,255,255,.18),
+      inset 0 0 22px rgba(255,255,255,.14),
+      0 14px 34px -8px rgba(0,10,40,.45);
   }
-  .pill.in { animation: rise 1.5s var(--settle) calc(var(--d) * 1ms) forwards, breathe 8s ease-in-out 2.8s infinite; }
-  .pill::before { /* light passing across the surface */
-    content: ""; position: absolute; inset: 0; z-index: -1;
-    background: linear-gradient(100deg, transparent 30%, rgba(0,132,48,.2) 50%, transparent 70%) -150% 0 / 60% 100% no-repeat;
-    animation: glide 8s ease-in-out 2.8s infinite;
-  }
-  .pill::after { /* hairline progress at the base */
-    content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--green);
-    transform-origin: left; animation: fill 8s var(--settle) 2.8s infinite;
-  }
-  @keyframes glide { 0% { background-position: -150% 0; } 50%, 100% { background-position: 250% 0; } }
-  @keyframes fill { 0% { transform: scaleX(0); opacity: 1; } 60% { transform: scaleX(1); opacity: 1; } 90%, 100% { transform: scaleX(1); opacity: 0; } }
-  @keyframes breathe { 50% { transform: scale(1.02); } }
+  .refract .glass { -webkit-backdrop-filter: url(#liquid) blur(3px) saturate(180%); backdrop-filter: url(#liquid) blur(3px) saturate(180%); }
 
   footer {
     position: fixed; left: 0; right: 0; bottom: max(1.25rem, env(safe-area-inset-bottom));
-    font: 600 .85rem "Times New Roman", Times, serif; letter-spacing: .08em; color: rgba(255,255,255,.6);
+    font: 600 .85rem "Times New Roman", Times, serif; letter-spacing: .08em; color: rgba(255,255,255,.65);
   }
 
-  /* reduced motion: gentle cross-fade, nothing travels or loops */
   @media (prefers-reduced-motion: reduce) {
-    .in, h1.in, .pill.in { animation: fade .6s ease forwards !important; transform: none; filter: none; }
-    .aurora i, .status b, .pill::before, .pill::after { animation: none !important; }
-    .pill::after { transform: scaleX(1); }
-    .aurora, main { transform: none; }
+    .in { animation: fade .6s ease forwards !important; transform: none; filter: none; }
+    .shape { animation: none !important; }
+    main { transform: none; }
   }
   @media (prefers-reduced-transparency: reduce) {
-    .status { background: var(--navy-deep); -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .glass { background: var(--navy-deep); -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   }
   @media (prefers-contrast: more) {
-    .status { border-color: var(--white); background: var(--navy-deep); }
+    .glass { background: var(--navy-deep); border-color: var(--white); }
     .tag, footer { color: var(--white); }
   }
 </style>
 </head>
 <body>
-  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-  <div class="grain" aria-hidden="true"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="liquid" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="2" seed="3" result="n">
+        <animate attributeName="baseFrequency" dur="14s" values=".012 .02;.02 .012;.012 .02" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="40" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
 
   <main>
-    <div class="status in" style="--d:100"><b></b>Launching soon</div>
-    <h1 class="in" style="--d:300">Trustnet Ops</h1>
-    <p class="tag in" style="--d:550">Your work, our word</p>
-    <div class="pill in" style="--d:800">Coming soon</div>
+    <h1 class="in" style="--d:200">Trustnet Ops</h1>
+    <p class="tag in" style="--d:450">Your work, our word</p>
+    <div class="stage in" style="--d:700">
+      <i class="shape g"></i><i class="shape w"></i><i class="shape r"></i>
+      <div class="glass">Coming soon</div>
+    </div>
   </main>
 
-  <footer class="in" style="--d:1100">&copy; 2026 Trustnet Ops</footer>
+  <footer class="in" style="--d:1000">&copy; 2026 Trustnet Ops</footer>
 
 <script>
-  // the page follows the pointer 1:1 through a critically damped chase, so it never snaps
+  // Chromium can run an SVG filter inside backdrop-filter; others keep the frosted blur
+  if (navigator.userAgentData) document.documentElement.classList.add("refract");
+  // the page follows the pointer through a critically damped chase, so it never snaps
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const root = document.documentElement, pill = document.querySelector(".pill");
+    const root = document.documentElement;
     let tx = 0, ty = 0, x = 0, y = 0;
     addEventListener("pointermove", e => { tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1; });
     document.addEventListener("pointerleave", () => { tx = ty = 0; });
-    pill.addEventListener("pointermove", e => {
-      const r = pill.getBoundingClientRect();
-      pill.style.setProperty("--sx", e.clientX - r.left + "px");
-      pill.style.setProperty("--sy", e.clientY - r.top + "px");
-    });
-    pill.addEventListener("pointerleave", () => { pill.style.setProperty("--sx", "50%"); pill.style.setProperty("--sy", "50%"); });
     (function tick() {
       x += (tx - x) * .06; y += (ty - y) * .06;
       root.style.setProperty("--px", x.toFixed(4)); root.style.setProperty("--py", y.toFixed(4));
